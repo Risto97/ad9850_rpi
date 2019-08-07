@@ -1,6 +1,8 @@
 #include <iostream>
+#include <wiringPi.h>
 
 #include "cxxopts.hpp"
+#include "ad9850.hpp"
 
 cxxopts::ParseResult
 parse(int argc, char * argv[])
@@ -14,13 +16,13 @@ parse(int argc, char * argv[])
         .show_positional_help();
 
       unsigned int freq = 0;
-      unsigned int run_time = 0;
+      unsigned int run_time_ms = 0;
 
       options
         .allow_unrecognised_options()
         .add_options()
         ("start", "start with frequency", cxxopts::value<unsigned int>(freq))
-        ("time", "run for time in ms", cxxopts::value<unsigned int>(run_time))
+        ("time", "run for time in ms", cxxopts::value<unsigned int>(run_time_ms))
         ("stop", "stop ad9850")
         ("help", "Print help");
 
@@ -34,11 +36,21 @@ parse(int argc, char * argv[])
 
       if(result.count("start"))
         {
-          std::cout << "Setting frequency: " << freq << std::endl;
+          std::cout << "Starting with frequency: " << freq << std::endl;
+          ad9850_set_freq(freq);
         }
-      if(result.count("time"))
+      if(result.count("time") and result.count("start"))
         {
-          std::cout << "Run time: " << run_time << std::endl;
+          std::cout << "Run time: " << run_time_ms << std::endl;
+          ad9850_run_for(freq, run_time_ms);
+        }
+      else if(result.count("time") and !result.count("start")){
+        std::cout << "Please enter frequency" << std::endl;
+      }
+      if(result.count("stop"))
+        {
+          std::cout << "Stoping AD9850: " << std::endl;
+          ad9850_rst();
         }
 
       return result;
@@ -51,9 +63,11 @@ parse(int argc, char * argv[])
 }
 
 int main(int argc, char *argv[]){
+  ad9850_init();
+  ad9850_rst();
+
   auto result = parse(argc, argv);
   auto arguments = result.arguments();
-  std::cout << "Saw " << arguments.size() << " arguments" << std::endl;
 
   return 0;
 }

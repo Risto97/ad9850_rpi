@@ -1,11 +1,12 @@
 CXX      := g++
-CXXFLAGS := -pedantic-errors -Wall -Wextra -Werror
-LDFLAGS  := -L/usr/lib -lstdc++ -lm
+CXXFLAGS := -Wall
+LDFLAGS  := -lwiringPi
 OBJ_DIR  := ./obj-pc
 APP_DIR  := ./
 TARGET   := program
-INCLUDE  := -I./
-SRC      := $(wildcard *.cpp)
+INCLUDE  := -I./ -I../ad9850
+SRC      := $(wildcard *.cpp) \
+	$(wildcard ../ad9850/*.cpp)
 
 OBJECTS := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 
