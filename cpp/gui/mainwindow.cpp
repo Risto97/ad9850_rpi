@@ -18,7 +18,7 @@
 #include <sstream>
 
 MainWindow::MainWindow() {
-  setFixedSize(800, 400);
+  // setFixedSize(800, 400);
 
   StatusBox *status_box = new StatusBox(this);
   setCentralWidget(status_box);
