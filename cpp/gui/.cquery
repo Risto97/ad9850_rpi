@@ -1,0 +1,15 @@
+%clang
+%cpp -std=gnu++14
+-pthread
+
+# Includes
+-I/usr/include/qt
+-I/usr/lib/qt
+-I/usr/include/qt/QtGui
+-I/usr/include/qt/QtCore
+-I/usr/include/libdrm
+-I/usr/lib/qt/mkspecs/linux-g++
+-I/usr/include/qt
+-I/usr/include/qt/*
+-I/usr/bin/moc
+-I/usr/include/qt/QtWidgets/
