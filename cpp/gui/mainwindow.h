@@ -15,6 +15,8 @@
 #include "status_box.h"
 #include "tab_dialog.h"
 
+#include "ad9850.hpp"
+
 class MainWindow : public QMainWindow {
   Q_OBJECT
 public:

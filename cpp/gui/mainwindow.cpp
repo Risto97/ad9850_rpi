@@ -12,6 +12,7 @@
 #include "qledindicator.h"
 #include "status_box.h"
 #include "tab_dialog.h"
+#include "ad9850.hpp"
 
 #include <cmath>
 #include <iostream>
@@ -19,6 +20,8 @@
 
 MainWindow::MainWindow() {
   // setFixedSize(800, 400);
+  ad9850_init();
+  ad9850_rst();
 
   StatusBox *status_box = new StatusBox(this);
   setCentralWidget(status_box);
@@ -50,8 +53,15 @@ MainWindow::MainWindow() {
   connect(this, SIGNAL(stop()), main_tab, SLOT(handle_stop()));
 }
 
-void MainWindow::handle_run(unsigned int f_val) {}
+void MainWindow::handle_run(unsigned int f_val) {
+  ad9850_set_freq(f_val);
+}
 
-void MainWindow::handle_run_for(unsigned int f_val, unsigned int time_ms) {}
+void MainWindow::handle_run_for(unsigned int f_val, unsigned int time_ms) {
+  ad9850_run_for(f_val, time_ms);
+}
 
-void MainWindow::handle_stop() { emit stop(); }
+void MainWindow::handle_stop() {
+  emit stop();
+  ad9850_rst();
+}
