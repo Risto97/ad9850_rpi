@@ -1,40 +1,41 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QWidget>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMainWindow>
 #include <QPushButton>
 #include <QSpinBox>
-#include <QLabel>
+#include <QTabWidget>
+#include <QVBoxLayout>
+#include <QWidget>
+
 #include "qledindicator.h"
+#include "status_box.h"
+#include "tab_dialog.h"
 
-class MainWindow : public QWidget
-{
+class MainWindow : public QMainWindow {
   Q_OBJECT
- public:
-  explicit MainWindow(QWidget *parent = 0);
+public:
+  explicit MainWindow();
 
- private:
-  QPushButton *start_button;
-  QSpinBox *freq_entry;
-  QLabel *freq_entry_label;
+private:
+  QWidget *window;
+  QHBoxLayout *main_layout;
+  StatusBox *status_box;
 
-  QSpinBox *time_entry;
-  QPushButton *run_for_button;
-  QLabel *time_entry_label;
+  QTabWidget *tabWidget;
+  MainTab *main_tab;
 
-  QLabel *status_label;
-  QLedIndicator *status_led;
+signals:
+  void finish();
+  void stop();
 
-  unsigned int freq = 0;
-  unsigned int run_time_ms = 0;
-
- signals:
-  public slots:
-   void handle_run_for();
-   void handle_start(bool checked);
-   void freq_changed(int val);
-   void run_time_changed(int val);
-
+public slots:
+  void handle_run(unsigned int f_val);
+  void handle_run_for(unsigned int f_val, unsigned int time_ms);
+  void handle_stop();
 };
 
 #endif // MAINWINDOW_H

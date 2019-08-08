@@ -1,92 +1,57 @@
-#include <QtGui>
-#include "mainwindow.h"
+#include <QFont>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QPushButton>
 #include <QSpinBox>
-#include <QLabel>
-#include <QFont>
 #include <QString>
-#include "qledindicator.h"
+#include <QVBoxLayout>
+#include <QWidget>
+#include <QtGui>
 
+#include "mainwindow.h"
+#include "qledindicator.h"
+#include "status_box.h"
+#include "tab_dialog.h"
+
+#include <cmath>
 #include <iostream>
 #include <sstream>
-#include <cmath>
 
+MainWindow::MainWindow() {
+  setFixedSize(800, 400);
 
-MainWindow::MainWindow(QWidget *parent) :
-  QWidget(parent) {
-  setFixedSize(400,400);
+  StatusBox *status_box = new StatusBox(this);
+  setCentralWidget(status_box);
 
-  freq_entry = new QSpinBox(this);
-  freq_entry->setMaximum(40000000);
-  freq_entry->setGeometry(10, 10, 120, 30);
+  main_tab = new MainTab();
 
-  freq_entry_label = new QLabel("Hz", this);
-  freq_entry_label->setGeometry(140, 10, 20, 30);
+  tabWidget = new QTabWidget;
+  tabWidget->addTab(main_tab, tr("General"));
+  // tabWidget->addTab(new MainTab(), tr("ASDDD"));
 
-  start_button = new QPushButton("Start", this);
-  start_button->setGeometry(170,10,60,30);
-  start_button->setCheckable(true);
+  main_layout = new QHBoxLayout;
+  main_layout->addWidget(tabWidget);
+  main_layout->addWidget(status_box);
 
+  window = new QWidget();
+  window->setLayout(main_layout);
+  setCentralWidget(window);
 
-  time_entry = new QSpinBox(this);
-  time_entry->setMaximum(pow(2,32));
-  time_entry->setGeometry(10, 50, 120, 30);
-
-  time_entry_label = new QLabel("ms", this);
-  time_entry_label->setGeometry(140, 50, 20, 30);
-
-  run_for_button = new QPushButton("Run for", this);
-  run_for_button->setGeometry(170,50,60,30);
-
-  status_label = new QLabel("", this);
-  status_label->setGeometry(10, 120, 250, 30);
-  QFont status_font = status_label->font();
-  status_font.setPointSize(11);
-  status_font.setBold(true);
-  status_label->setFont(status_font);
-
-  status_led = new QLedIndicator(this);
-  status_led->setGeometry(180, 120, 30, 30);
-  status_led->setEnabled(false);
-
-
-  /* Signals */
-  connect(run_for_button, SIGNAL(pressed()), this, SLOT(handle_run_for()));
-  connect(start_button, SIGNAL(clicked(bool)), this, SLOT(handle_start(bool)));
-  connect(freq_entry, SIGNAL(valueChanged(int)), this, SLOT(freq_changed(int)));
-  connect(time_entry, SIGNAL(valueChanged(int)), this, SLOT(run_time_changed(int)));
-
+  // /* Signals */
+  connect(main_tab, SIGNAL(run(unsigned int)), this,
+          SLOT(handle_run(unsigned int)));
+  connect(main_tab, SIGNAL(run(unsigned int)), status_box,
+          SLOT(handle_run(unsigned int)));
+  connect(main_tab, SIGNAL(run_for(unsigned int, unsigned int)), status_box,
+          SLOT(handle_run_for(unsigned int, unsigned int)));
+  connect(main_tab, SIGNAL(stop()), status_box, SLOT(handle_stop()));
+  connect(this, SIGNAL(finish()), status_box, SLOT(handle_stop()));
+  connect(status_box, SIGNAL(stop()), this, SLOT(handle_stop()));
+  connect(this, SIGNAL(stop()), main_tab, SLOT(handle_stop()));
 }
 
-void MainWindow::handle_run_for(){
-  start_button->setChecked(0);
-  status_led->setChecked(true);
+void MainWindow::handle_run(unsigned int f_val) {}
 
-  std::stringstream ss;
-  ss << "Freq: " << freq << " Hz\n" << "Time: " << run_time_ms << "ms";
-  QString QStr = QString::fromStdString(ss.str());
-  status_label->setText(QStr);
+void MainWindow::handle_run_for(unsigned int f_val, unsigned int time_ms) {}
 
-  status_led->setChecked(false);
-}
-
-void MainWindow::handle_start(bool checked){
-  if(checked){
-    std::stringstream ss;
-    ss << "Freq: " << freq << " Hz";
-    QString QStr = QString::fromStdString(ss.str());
-    status_label->setText(QStr);
-    status_led->setChecked(true);
-  }
-  else{
-    status_led->setChecked(false);
-  }
-}
-
-void MainWindow::freq_changed(int val){
-  freq = val;
-}
-
-void MainWindow::run_time_changed(int val){
-  run_time_ms = val;
-}
+void MainWindow::handle_stop() { emit stop(); }
