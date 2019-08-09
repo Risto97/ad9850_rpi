@@ -55,4 +55,6 @@ Qt must be installed for builing.
 
 WiringPi is used for GPIO access.
 
-![GUI application](https://github.com/Risto97/ad9850_rpi/blob/master/docs/img/ad9850_gui.png)
+![GUI run](https://github.com/Risto97/ad9850_rpi/blob/master/docs/img/ad9850_gui_run.png)
+![GUI run for](https://github.com/Risto97/ad9850_rpi/blob/master/docs/img/ad9850_gui_run_for.png)
+![GUI sweep](https://github.com/Risto97/ad9850_rpi/blob/master/docs/img/ad9850_gui_sweep.png)
