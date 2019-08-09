@@ -1,4 +1,7 @@
 
+.PHONY : all
+all : cli_app gui_app
+
 cli_app:
 	@mkdir -p bin/
 	make -C src/cli
