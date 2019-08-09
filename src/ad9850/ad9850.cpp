@@ -48,13 +48,16 @@ void ad9850_rst(){
   _gpio_pulse(FQ_UD, 1);
 }
 
-void ad9850_run_for(unsigned int freq, unsigned int delay_ms){
-  ad9850_set_freq(freq);
-  delay(delay_ms);
-  ad9850_rst();
+int _delay_ms_breakable(unsigned int delay_ms, bool *keep_running){
+  for(int i=0; i < delay_ms; i++){
+    delay(1);
+    if(!(*keep_running))
+      return 0;
+  }
+  return 1;
 }
 
-void ad9850_set_freq(unsigned int freq){
+void ad9850_run(unsigned int freq){
   unsigned long tuning_word = (freq* pow(2,32)) / DDS_CLK;
 
   digitalWrite(FQ_UD, 0);
@@ -67,4 +70,26 @@ void ad9850_set_freq(unsigned int freq){
 
   _gpio_pulse(FQ_UD, 1);
   digitalWrite(DATA, 0);
+}
+
+void ad9850_run_for(unsigned int freq, unsigned int delay_ms, bool *keep_running){
+  ad9850_run(freq);
+  _delay_ms_breakable(delay_ms, keep_running);
+  ad9850_rst();
+}
+
+void ad9850_sweep(unsigned start_freq, unsigned int stop_freq, unsigned int step_freq, unsigned int step_time, bool *keep_running){
+  unsigned int range = stop_freq - start_freq;
+  unsigned int steps = range / step_freq;
+  unsigned int freq = start_freq;
+
+  for(int i = 0; i < steps; i++){
+    ad9850_run(freq);
+
+    if(!_delay_ms_breakable(step_time, keep_running))
+      break;
+    else
+      freq += step_freq;
+  }
+  ad9850_rst();
 }

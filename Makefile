@@ -11,10 +11,11 @@ gui_app:
 	mv src/gui/program bin/ad9850_gui
 
 test_gui: gui_app
-	./src/gui/program
+	./bin/ad9850_gui
 
 install:
 	install -D -t $(DESTDIR)$(PREFIX)/bin bin/ad9850_gui
+	install -D -t $(DESTDIR)$(PREFIX)/bin bin/ad9850_cli
 
 clean:
 	-make -C src/gui/ clean

@@ -1,14 +1,11 @@
-#ifndef _TAB_DIALOG_H
-#define _TAB_DIALOG_H
+#ifndef _BASIC_TAB_H
+#define _BASIC_TAB_H
 
-#include <QDialog>
-#include <QDialogButtonBox>
 #include <QLabel>
 #include <QPushButton>
 #include <QSpinBox>
-#include <QTabWidget>
 
-class MainTab : public QWidget {
+class BasicTab : public QWidget {
   Q_OBJECT
 
 private:
@@ -31,11 +28,11 @@ public slots:
   void handle_freq_changed(int val);
   void handle_time_changed(int val);
   void handle_run_for();
-  void handle_run(bool checked);
+  void handle_run();
   void handle_stop();
 
 public:
-  explicit MainTab(QWidget *parent = 0);
+  explicit BasicTab(QWidget *parent = 0);
 };
 
 #endif

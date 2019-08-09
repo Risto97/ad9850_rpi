@@ -37,12 +37,13 @@ parse(int argc, char * argv[])
       if(result.count("start"))
         {
           std::cout << "Starting with frequency: " << freq << std::endl;
-          ad9850_set_freq(freq);
+          ad9850_run(freq);
         }
       if(result.count("time") and result.count("start"))
         {
           std::cout << "Run time: " << run_time_ms << std::endl;
-          ad9850_run_for(freq, run_time_ms);
+          bool t_val = true;
+          ad9850_run_for(freq, run_time_ms, &t_val);
         }
       else if(result.count("time") and !result.count("start")){
         std::cout << "Please enter frequency" << std::endl;
