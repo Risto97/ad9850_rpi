@@ -4,13 +4,34 @@
 #include <iostream>
 #include <sstream>
 
+#include <QMenuBar>
+#include <QInputDialog>
+#include <QString>
+#include <QLineEdit>
+
 MainWindow::MainWindow() {
   // setFixedSize(800, 400);
+  cfg = new Cfg();
+  int asd = cfg->read();
 
-  ad9850_init();
-  ad9850_rst();
+  ad9850 = new AD9850(cfg);
+
+  ad9850->init();
+  ad9850->rst();
+
+  QAction *show_config = new QAction("&config", this);
+
+  QMenu *config_menu;
+  config_menu = menuBar()->addMenu("&config");
+  config_menu->addAction(show_config);
+
+  config_dialog = new ConfigDialog();
+
+  connect(show_config, SIGNAL(triggered()), this, SLOT(handle_pop_config()));
+
 
   StatusBox *status_box = new StatusBox(this);
+
   setCentralWidget(status_box);
 
   basic_tab = new BasicTab();
@@ -44,6 +65,8 @@ MainWindow::MainWindow() {
   connect(sweep_tab, SIGNAL(sweep(unsigned int, unsigned int, unsigned int, unsigned int)), this, SLOT(handle_sweep(unsigned int, unsigned int, unsigned int, unsigned int)));
   connect(sweep_tab, SIGNAL(sweep(unsigned int, unsigned int, unsigned int, unsigned int)), status_box, SLOT(handle_sweep(unsigned int, unsigned int, unsigned int, unsigned int)));
 
+  connect(config_dialog, SIGNAL(accepted()), this, SLOT(handle_read_config()));
+
   connect(status_box, SIGNAL(stop()), this, SLOT(handle_stop()));
   connect(this, SIGNAL(stop()), basic_tab, SLOT(handle_stop()));
   connect(this, SIGNAL(stop()), status_box, SLOT(handle_stop()));
@@ -54,9 +77,9 @@ MainWindow::MainWindow() {
 
   /* THREADS */
 
-  run_for_thrd = new RunForThr();
-  run_thrd = new RunThr();
-  sweep_thrd = new SweepThr();
+  run_thrd = new RunThr(ad9850);
+  run_for_thrd = new RunForThr(ad9850);
+  sweep_thrd = new SweepThr(ad9850);
 
   connect(run_for_thrd, SIGNAL(finished()), this, SLOT(handle_finish()));
 
@@ -83,4 +106,13 @@ void MainWindow::handle_stop() {
 }
 void MainWindow::handle_finish() {
   emit stop();
+}
+
+void MainWindow::handle_pop_config() {
+  config_dialog->open();
+}
+
+void MainWindow::handle_read_config(){
+  cfg->read();
+  ad9850->set_vals(cfg);
 }

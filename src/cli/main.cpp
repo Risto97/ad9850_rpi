@@ -1,11 +1,12 @@
 #include <iostream>
-#include <wiringPi.h>
+// #include <wiringPi.h>
 
 #include "cxxopts.hpp"
 #include "ad9850.hpp"
+#include "config.hpp"
 
 cxxopts::ParseResult
-parse(int argc, char * argv[])
+parse(int argc, char * argv[], AD9850 *ad9850)
 {
   try
     {
@@ -37,13 +38,13 @@ parse(int argc, char * argv[])
       if(result.count("start"))
         {
           std::cout << "Starting with frequency: " << freq << std::endl;
-          ad9850_run(freq);
+          ad9850->run(freq);
         }
       if(result.count("time") and result.count("start"))
         {
           std::cout << "Run time: " << run_time_ms << std::endl;
           bool t_val = true;
-          ad9850_run_for(freq, run_time_ms, &t_val);
+          ad9850->run_for(freq, run_time_ms, &t_val);
         }
       else if(result.count("time") and !result.count("start")){
         std::cout << "Please enter frequency" << std::endl;
@@ -51,7 +52,7 @@ parse(int argc, char * argv[])
       if(result.count("stop"))
         {
           std::cout << "Stoping AD9850: " << std::endl;
-          ad9850_rst();
+          ad9850->rst();
         }
 
       return result;
@@ -64,10 +65,13 @@ parse(int argc, char * argv[])
 }
 
 int main(int argc, char *argv[]){
-  ad9850_init();
-  ad9850_rst();
+  Cfg *cfg = new Cfg();
+  int ret = cfg->read();
+  AD9850 *ad9850 = new AD9850(cfg);
+  ad9850->init();
+  ad9850->rst();
 
-  auto result = parse(argc, argv);
+  auto result = parse(argc, argv, ad9850);
   auto arguments = result.arguments();
 
   return 0;

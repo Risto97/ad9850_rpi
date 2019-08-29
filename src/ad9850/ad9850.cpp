@@ -1,21 +1,72 @@
-#include <wiringPi.h>
+// #include <wiringPi.h>
 #include <cmath>
 
 #include "ad9850.hpp"
 
-void ad9850_init(){
+void AD9850::init(){
   wiringPiSetup();
 
-  pinMode(W_CLK, OUTPUT);
-  pinMode(FQ_UD, OUTPUT);
-  pinMode(DATA, OUTPUT);
-  pinMode(RST, OUTPUT);
+  pinMode(clk_pin, OUTPUT);
+  pinMode(fq_ud_pin, OUTPUT);
+  pinMode(data_pin, OUTPUT);
+  pinMode(rst_pin, OUTPUT);
 
-  digitalWrite(W_CLK, 0);
-  digitalWrite(FQ_UD, 0);
-  digitalWrite(DATA, 0);
-  digitalWrite(RST, 0);
+  digitalWrite(clk_pin, 0);
+  digitalWrite(fq_ud_pin, 0);
+  digitalWrite(data_pin, 0);
+  digitalWrite(rst_pin, 0);
 }
+
+void AD9850::rst(){
+  digitalWrite(clk_pin, 0);
+  digitalWrite(fq_ud_pin, 0);
+
+  _gpio_pulse(rst_pin, 1);
+  _gpio_pulse(clk_pin, 1);
+
+  digitalWrite(data_pin, 0);
+
+  _gpio_pulse(fq_ud_pin, 1);
+  _gpio_pulse(fq_ud_pin, 1);
+}
+
+void AD9850::run(unsigned int freq){
+  unsigned long tuning_word = (freq* pow(2,32)) / DDS_CLK;
+
+  digitalWrite(fq_ud_pin, 0);
+
+  _shift_out(data_pin, clk_pin, tuning_word);
+  _shift_out(data_pin, clk_pin, tuning_word >> 8);
+  _shift_out(data_pin, clk_pin, tuning_word >> 16);
+  _shift_out(data_pin, clk_pin, tuning_word >> 24);
+  _shift_out(data_pin, clk_pin, 0x00);
+
+  _gpio_pulse(fq_ud_pin, 1);
+  digitalWrite(data_pin, 0);
+}
+
+void AD9850::run_for(unsigned int freq, unsigned int delay_ms, bool *keep_running){
+  ad9850_run(freq);
+  _delay_ms_breakable(delay_ms, keep_running);
+  ad9850_rst();
+}
+
+void AD9850::sweep(unsigned start_freq, unsigned int stop_freq, unsigned int step_freq, unsigned int step_time, bool *keep_running){
+  unsigned int range = stop_freq - start_freq;
+  unsigned int steps = range / step_freq;
+  unsigned int freq = start_freq;
+
+  for(int i = 0; i < steps; i++){
+    ad9850_run(freq);
+
+    if(!_delay_ms_breakable(step_time, keep_running))
+      break;
+    else
+      freq += step_freq;
+  }
+  ad9850_rst();
+}
+
 
 void _shift_out(unsigned int pin, unsigned int clk, unsigned int val){
   int i = 0;
@@ -35,18 +86,6 @@ void _gpio_pulse(unsigned int pin, unsigned int delay_us){
   digitalWrite(pin, 0);
 
 }
-void ad9850_rst(){
-  digitalWrite(W_CLK, 0);
-  digitalWrite(FQ_UD, 0);
-
-  _gpio_pulse(RST, 1);
-  _gpio_pulse(W_CLK, 1);
-
-  digitalWrite(DATA, 0);
-
-  _gpio_pulse(FQ_UD, 1);
-  _gpio_pulse(FQ_UD, 1);
-}
 
 int _delay_ms_breakable(unsigned int delay_ms, bool *keep_running){
   for(int i=0; i < delay_ms; i++){
@@ -55,41 +94,4 @@ int _delay_ms_breakable(unsigned int delay_ms, bool *keep_running){
       return 0;
   }
   return 1;
-}
-
-void ad9850_run(unsigned int freq){
-  unsigned long tuning_word = (freq* pow(2,32)) / DDS_CLK;
-
-  digitalWrite(FQ_UD, 0);
-
-  _shift_out(DATA, W_CLK, tuning_word);
-  _shift_out(DATA, W_CLK, tuning_word >> 8);
-  _shift_out(DATA, W_CLK, tuning_word >> 16);
-  _shift_out(DATA, W_CLK, tuning_word >> 24);
-  _shift_out(DATA, W_CLK, 0x00);
-
-  _gpio_pulse(FQ_UD, 1);
-  digitalWrite(DATA, 0);
-}
-
-void ad9850_run_for(unsigned int freq, unsigned int delay_ms, bool *keep_running){
-  ad9850_run(freq);
-  _delay_ms_breakable(delay_ms, keep_running);
-  ad9850_rst();
-}
-
-void ad9850_sweep(unsigned start_freq, unsigned int stop_freq, unsigned int step_freq, unsigned int step_time, bool *keep_running){
-  unsigned int range = stop_freq - start_freq;
-  unsigned int steps = range / step_freq;
-  unsigned int freq = start_freq;
-
-  for(int i = 0; i < steps; i++){
-    ad9850_run(freq);
-
-    if(!_delay_ms_breakable(step_time, keep_running))
-      break;
-    else
-      freq += step_freq;
-  }
-  ad9850_rst();
 }

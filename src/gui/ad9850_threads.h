@@ -14,8 +14,13 @@ class RunThr : public QThread {
  private:
   bool keep_running;
   unsigned int freq;
+  AD9850 *ad9850;
 
  public:
+
+  RunThr(AD9850 *ad) : ad9850(ad){
+
+  }
 
   void start_with(unsigned int f_val){
     freq = f_val;
@@ -30,7 +35,7 @@ class RunThr : public QThread {
  protected:
     void run() {
       keep_running = true;
-      ad9850_run(freq);
+      ad9850->run(freq);
     }
 };
 
@@ -41,8 +46,11 @@ private:
   bool keep_running;
   unsigned int freq;
   unsigned int time_ms;
+  AD9850 *ad9850;
 
  public:
+
+  RunForThr(AD9850 *ad) : ad9850(ad){}
 
   void start_with(unsigned int f_val, unsigned int t_val){
     freq = f_val;
@@ -58,7 +66,7 @@ public slots:
 protected:
   void run() {
     keep_running = true;
-    ad9850_run_for(freq, time_ms, &keep_running);
+    ad9850->run_for(freq, time_ms, &keep_running);
 
   }
 };
@@ -72,8 +80,12 @@ class SweepThr : public QThread {
   unsigned int stop_freq;
   unsigned int step_freq;
   unsigned int step_time_ms;
+  AD9850 *ad9850;
 
  public:
+
+
+  SweepThr(AD9850 *ad) : ad9850(ad){}
 
   void start_with(unsigned int start_f_val, unsigned int stop_f_val, unsigned int step_f_val, unsigned int step_t_val){
     start_freq = start_f_val;
@@ -91,7 +103,7 @@ class SweepThr : public QThread {
  protected:
     void run() {
       keep_running = true;
-      ad9850_sweep(start_freq, stop_freq, step_freq, step_time_ms, &keep_running);
+      ad9850->sweep(start_freq, stop_freq, step_freq, step_time_ms, &keep_running);
     }
 };
 

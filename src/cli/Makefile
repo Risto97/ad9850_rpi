@@ -1,12 +1,14 @@
 CXX      := g++
-CXXFLAGS := -Wall
-LDFLAGS  := -lwiringPi
+CXXFLAGS := -Wall -std=c++17
+LDFLAGS  := -lconfig++ -lstdc++fs -lwiringPi
 OBJ_DIR  := ./obj-pc
 APP_DIR  := ./
 TARGET   := program
-INCLUDE  := -I./ -I../ad9850
+INCLUDE  := -I./ -I../ad9850 -I../common
 SRC      := $(wildcard *.cpp) \
-	$(wildcard ../ad9850/*.cpp)
+	$(wildcard ../ad9850/*.cpp) \
+	$(wildcard ../common/*.cpp) \
+
 
 OBJECTS := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 
