@@ -1,0 +1,41 @@
+\section{Zaključak}
+
+Razvijena aplikacija omogućava jednostavno upravljanje osnovnim režimima rada
+AD9850 integrisanog kola. \\
+RPi se pokazao kao dobra platforma za razvoj korisničkog interfejsa generatora
+funkcija i ostavlja mogućnost za lako proširenje funkcionalnosti. \\
+
+\subsubsection{Predlozi proširenja}
+U nastavku biće predloženi načini na za proširenje ovog projekta.
+Implementacijom ovih predloga može se dobiti uređaj u oblasti audio elektronike
+i drugih oblasti na višim frekvencijama. \\
+Većina ovih predloga zahteva projektovanje dodatnih analognih
+elektronskih kola pa zbog toga njihova implementacija nije razmatrana u ovom projektu. \\
+
+\begin{itemize}
+\item \textbf{Dodavanje izlaznog pojačavača} signala sa mogućnosti dodavanja napona
+  offset-a kako bi se obezbedili standardni naponski nivoi prisutni kod
+  komercijalnih generatora funkcija (+,- 15V). \\
+  Zbog relativno širokog opsega frekvencija generisanog signala (0-40MHz) ovo
+  nije trivijalan zadatak i potrebno je korišćenje odgovarajućeg operacionog
+  pojačavača sa dovoljno širokim frekventnim opsegom, alternativno ograničiti
+  izlaznu frekvenciju na uži opseg.
+
+\item \textbf{Softversko podešavanje ispune pravougaonog signala}. \\
+  Modul korišćen u ovom projektu nema spoljni pristup ulazu internog komparatora i
+  potrebno je izvršiti modifikaciju na ploči ili projektovati novu ploču.
+  Potrebno je obezbediti analogni napon sa mogućnosti podešavanja softverskim
+  putem, najverovatnije korišćenjem integrisanog \textbf{AD} konvertora.
+
+\item \textbf{Proširenje projekta na Wobbler generator}. \\
+  Realizovan sweep režim rada predstavlja osnovu Wobbler generatora. \\
+  AD9850 je pogodan za realizaciju ovog uređaja zbog širokog opsega izlazne
+  frekvencije i mogućnost brze promene frekvencije. \\
+  Pored Sweep signala potrebno je obezbediti i trouglasti signal za vremensku
+  bazu osciloskopa kao i potrebne pojačavače za oba signala.
+
+\end{itemize}
+
+\subsubsection{Slike rada}
+
+U nastavku su okačene slike sa logičkog analizatora koje prikazuju rad uređaja.

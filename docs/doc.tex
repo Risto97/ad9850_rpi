@@ -1,0 +1,51 @@
+\documentclass[12pt]{article}
+\usepackage[serbian]{babel}
+
+
+\usepackage{glossaries}
+\usepackage{project}
+\usepackage{glossary}
+\usepackage{amsmath}
+\usepackage{bytefield}
+\usepackage{register}
+\newcommand{\thesisName}{RaspberryPi generator funkcija sa AD9850 integrisanim kolom}
+\newcommand{\subjectName}{Projekat iz predmeta Računarska Elektronika}
+
+\author{Risto Pejašinović EE19/2015}
+\newcommand{\mentor}{Prof.dr. Ivan Mezei}
+\date{septembar 2019}
+
+
+\begin{document}
+\counterwithin{lstlisting}{section}
+\counterwithin{figure}{section}
+\counterwithin{equation}{section}
+\counterwithin{table}{section}
+
+\titlePageCmd
+
+\noindent
+
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+\input{glossary.tex}
+
+\newpage
+
+\input{uvod.tex}
+
+\newpage
+
+\input{aplikacija.tex}
+
+\newpage
+
+\input{zakljucak.tex}
+
+\newpage
+
+\bibliography{bibliography}
+\bibliographystyle{IEEEtran}
+
+\end{document}

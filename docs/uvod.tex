@@ -1,0 +1,23 @@
+
+\section{Uvod}
+Cilj ovog projekta je projektovanje preciznog i programabilnog generatora
+sinusnog i pravougaonog signala sa jednostavnim \gls{ui}. \\
+Potrebno je obezbediti jednostavan i intuitivan \gls{gui} i \gls{cli} korisnički interfejs.
+\\
+
+Za potrebne korisničkog interfejsa i zadavanja konfiguracije generatoru funkcija
+odabran je \gls{sbc} \gls{rpi} pod GNU/Linux operativnim sistemom. \\
+Za generisanje sinusnog i pravougaonog signala odabrano je AD9850 integrisano
+kolo. \\
+
+Cilj je obezbediti iste funkcionalnosti u \gls{gui} i \gls{cli} aplikaciji.
+Ovo je postignuto korišćenjem jedinstvenog \gls{api} za AD9850 integrisao
+kolo. Obe aplikacije trebaju implementirati pozive funkcija iz \gls{api}
+.\\
+
+\gls{cli} aplikacija omogućava podešavanje generatora funkcija pomoću skriptnih jezika
+poput \gls{bash} i samim tim omogućava automatizaciju i proširenje
+funkcionalnosti prema potrebi korisnika. Takođe korisnik može implementirati
+dodatne funkcionalnosti u C++ jeziku korišćenjem AD9850 \gls{api}.
+
+\input{ad9850.tex}

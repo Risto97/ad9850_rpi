@@ -1,0 +1,140 @@
+\usepackage[Serbian-Latn]{babel}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx} % in the preamble
+
+\usepackage{array}
+\usepackage{url}
+\usepackage{hyperref}
+
+\usepackage[tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in]{geometry}
+\sectionfont{\fontsize{22}{15}\selectfont}
+\subsectionfont{\fontsize{19}{15}\selectfont}
+
+\renewcommand\footnoterule{%
+  \kern-3\p@
+  \hrule\@width \textwidth
+  \kern2.6\p@}
+
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+
+\newcommand{\titlePageCmd}{
+  \begin{titlepage}
+    \null
+    \vskip 2.5cm
+
+    \begin{center}
+
+      {\Huge \textbf \thesisName}
+      \vskip 0.5cm
+
+      {\Large \subjectName}
+
+    \end{center}
+
+    \vfill
+    \vfill
+
+    \begin{tabularx}{\textwidth}{X r}
+      \large Kandidat & \large Mentor \\
+      \large \@author & \large \mentor \\
+    \end{tabularx}
+
+    \center  \small\today\\
+  \end{titlepage}
+}
+
+%% math %%%
+\usepackage[nomessages]{fp}
+\usepackage{amsmath}
+
+%%%% table %%%
+\usepackage[table]{colortbl}
+
+%%% figure counter settings %%%
+\usepackage{chngcntr}
+
+
+%% tikz block diagrams %%
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,shapes.geometric}
+\usetikzlibrary{fit}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{automata}
+
+%%%% Keywords %%%%
+
+%%% code style %%%
+
+\renewcommand{\lstlistingname}{Primer}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\normal\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+
+\lstset{
+  escapechar=@,
+  style=customc,
+  frame=tb,
+  numbers=left,
+  numberstyle=\color{mygray},
+}
+
+%%% Timing diagrams %%%%%
+\usepackage{tikz-timing}[2014/10/29]
+\usetikztiminglibrary[rising arrows]{clockarrows}
+\usepackage{xparse} % NewDocumentCommand, IfValueTF, IFBooleanTF
+
+% Reference a bus.
+%
+% Usage:
+%
+%     \busref[3::0]{C/BE}    ->   C/BE[3::0]
+%     \busref*{AD}           ->   AD#
+%     \busref*[3::0]{C/BE}   ->   C/BE[3::0]#
+%
+\NewDocumentCommand{\busref}{som}{\texttt{%
+#3%
+\IfValueTF{#2}{[#2]}{}%
+\IfBooleanTF{#1}{\#}{}%
+}}
+
+% Listing for bash %
+\usepackage{listings}
+\usepackage{upquote}
+
+\lstset{
+  numbers=left,
+  numberstyle=\scriptsize,
+  tabsize=4,
+  rulecolor=,
+  language=bash,
+  basicstyle=\scriptsize,
+  aboveskip={1.5\baselineskip},
+  columns=fixed,
+  frame=single,
+  showtabs=false,
+  showspaces=false,
+  showstringspaces=false,
+  identifierstyle=\ttfamily,
+  keywordstyle=\ttfamily
+}

@@ -1,0 +1,245 @@
+\section{Aplikacija}
+
+\subsection{Režimi rada}\label{working_modes}
+Kao što je već rečeno \gls{cli} i \gls{gui} aplikacija trebaju da obezbede iste
+funkcionalnosti:
+\begin{itemize}
+\item \label{run_mode} \textbf{Run} pokretanje generatora sa fiksnom frekvencijom bez vremenskog
+  ograničenja rada, potreban argument:
+  \begin{itemize}
+    \item \textbf{freq} zadata frekvencija generisanog signala u Hz.
+  \end{itemize}
+\item \label{run_for_mode} \textbf{Run for} pokretanje generatora sa fiksnom frekvencijom sa
+  određenim vremenom trajanja.
+  \begin{itemize}
+  \item \textbf{freq} zadata frekvencija generisanog signala u Hz.
+  \item \textbf{time\_ms} trajanje generisanja signala u ms.
+  \end{itemize}
+
+\item \label{sweep_mode} \textbf{Sweep} linearna promena frekvencije između dve definisane
+  vrednosti.
+  \begin{itemize}
+  \item \textbf{start\_freq} početna frekvencija u Hz.
+  \item \textbf{stop\_freq}  krajnja frekvencija u Hz.
+  \item \textbf{step\_freq}  vrednost koraka frekvencije u Hz.
+  \item \textbf{step\_time}  vreme zadržavanja na svakom koraku u ms.
+  \end{itemize}
+  Ovaj režim rada generatora se često koristi u ispitivanju frekvencijske karakteristika
+  elektronskih kola.
+  Za prikazivanje frekvencijske karakteristike na osciloskopu pored signala promenljive
+  frekvencije potrebno je obezbediti i trougaoni signal kao izvor vremenske baze
+  osciloskopa. \\
+  Ovakav uređaj se naziva Sweep Generator ili Wobbler.
+  Često se jedan kanal osciloskopa može podesiti kao izvor vremenske baze dok
+  drugi služi kao ulaz za Y-osu.
+
+\end{itemize}
+
+\subsubsection{Konfiguracija aplikacije} \label{config_file}
+Potrebno je obezbediti mogućnost promene pinova preko kojih je \gls{rpi} povezan
+sa AD9850 modulom bez ponovnog kompajliranja aplikacije. \\
+Ovo je rešeno korišćenjem deljenog konfiguracionog fajla za \gls{cli} i
+\gls{gui} aplikaciju. \\
+
+Konfiguracioni fajl treba da sadrži sledeće parametre.
+\begin{itemize}
+\item \textbf{w\_clk} broj WiringPi pina povezanim sa \textbf{W\_CLK} pinom na AD9850 modulu.
+\item \textbf{fq\_ud} broj WiringPi pina povezanim sa \textbf{FQ\_UD} pinom na AD9850 modulu.
+\item \textbf{data} broj WiringPi pina povezanim sa \textbf{D7} pinom na AD9850 modulu.
+\item \textbf{rst} broj WiringPi pina povezanim sa \textbf{RST} pinom na AD9850 modulu.
+\item \textbf{dds\_clk} frekvencija referentnog oscilatora u Hz na AD9850 modulu.
+\end{itemize}
+
+Na GNU/Linux operativnim sistemima konfiguracioni fajlovi trebaju da se nalaze
+u određenom direktorijumu. \\
+Prema XDG Base Directory Specification\cite{xdg_spec} od freedesktop projekta
+treba se poštovati sledeće pravilo za kreiranje konfiguracionog fajla.
+
+\begin{itemize}
+  \item Ukoliko je varijabla okruženja \textbf{XDG\_CONFIG\_HOME} postavljena,
+    tada ona sadrži putanje direktrijuma gde se smeštaju korsnički
+    konfiguracioni fajlovi za aplikacije.
+  \item Ukoliko je varijabla okruženja \textbf{XDG\_CONFIG\_HOME} prazna kao
+    direktorijum za smeštanje korisničkih konfiguracionih fajlova treba
+    koristiti \textbf{\$HOME/.config}.
+  \item Svaka aplikacija koja ima potrebe za konfiguracionim fajlom treba imati
+    svoj direktorijum unutar \textbf{XDG\_CONFIG\_HOME} direktorijuma unutar kojeg će se
+    nalaziti konfiguracioni fajlovi.
+\end{itemize}
+
+Ovo ne deluje kao previše bitna stavka, ali bi poštovanje ovih pravila trebalo
+biti obavezno.
+Zbog nepoznavanje ove specifikacije od strane programera nastali su programi
+koji nemaju jedinstven direktorijum za konfiguracione fajlove, već se oni mogu naći
+svuda po sistemu.
+Ovo stvara problem prilikom backup-ovanja sistema, ukoliko su svi konfiguracioni
+i korisnički fajlovi na definisanom mestu backup sistema može biti automatizovan i siguran. \\
+Ova specifikacija definiše direktorijume i za ostale korisničke fajlove. \\
+
+Potrebno je na siguran način parsirati i upisivati ove konfiguracione fajlove.
+Kako bi se izbeglo ponovno pisanje ovakve biblioteke i izbegli rizici za ovaj projekat izabrana je \textbf{libconfig}\cite{libconfig} biblioteka.\\
+
+Za pristup GPIO pinova RPi korišćena je WiringPi\cite{WiringPi} biblioteka
+
+\subsection{CLI aplikacija}
+
+\gls{cli} je aplikacija koja se izvršava bez grafičkog okruženja preko komandne linije.
+Ovo je često bolji pristup za određene aplikacije.
+Kod nekih aplikacija grafičko okruženje nije neophodno i često je
+lakše i pouzdanije upravljati preko komandne linije. \\
+
+\subsubsection{Prednosti CLI aplikacije}
+CLI aplikacije su manje kompleksne od GUI aplikacija i
+samim tim postoji manje mogućnosti za postojanje bug-ova.
+Funkcionalnost programa je najčešće bitnija od grafičkog interfejsa, pisanje CLI
+aplikacije zbog jednostavnosti omogućava programeru da se fokusira više na samu
+funkcionalnost. \\
+
+Dodatna prednost CLI aplikacije je lakše pokretanje i podešavanje aplikacije iz
+skriptnih jezika (BASH, Python) ovo često kod GUI aplikacija nije moguće.
+Skriptovanje omogućava automatizaciju poslova i uklanja potrebu za ljudskim faktorom.\\
+
+\subsubsection{Parsiranje argumenata komandne linije}
+
+Jedan od zadataka CLI aplikacije je parsiranje argumenata komandne linije.
+Kako bi se skratilo vreme razvoja i izbegla mogućnost grešaka može se koristiti
+neka od biblioteka za parsiranje argumenata, u ovom projektu je korišćena
+\textbf{cxxxopts}\cite{cxxopts} biblioteka.
+
+Ova biblioteka se sastoji samo od jednog Header fajla, time ukljanja potrebu za
+kompajliranjem dodatne biblioteke.
+
+\subsubsection{Uputstvo za upotrebu}
+
+Pokretanjem \textbf{ad9850\_cli} izvršnog fajla sa argumentom \emph{---help} na
+\textbf{stdout} će se ispisati uputstvo za upotrebu aplikacije. \\
+
+\begin{lstlisting}[language=bash, caption=ad9850\_cli help opcija]
+   $ ad9850 --help
+   AD9850 cli application.
+   Usage:
+     AD9850 [OPTION...]
+
+         --run arg        Run with frequency arg
+         --run-for arg    Run with frequency arg[0] for time arg[1] in ms
+         --sweep arg      Sweep from freq arg[0] to freq arg[1] with step freq
+                          arg[2] and step time arg[3] in Hz and ms
+         --stop           Stop ad9850
+         --read-cfg       Prints tuple of configuration parameters to stdout
+         --write-cfg arg  Write cfg, arg is tuple = w_clk,fq_ud,data,rst,dds_clk
+         --help           Show help
+
+\end{lstlisting} %$
+
+Na osnovu uputstva možemo pokrenuti generator u Sweep režimu na sledeći način.
+
+\begin{lstlisting}[language=bash, caption=ad9850\_cli sweep opcija]
+  $ ad9850 --sweep 1000,10000,100,10
+  Sweeping from 1000 Hz to 10000 Hz, with step 100 Hz and step time 10 ms
+\end{lstlisting} %$
+\subsection{GUI aplikacija}
+
+\subsubsection{Uvod}
+Napisana je pomoću Qt Framework-a \cite{qt}. \\
+Za GUI aplikaciju potrebno je obezbediti intuitivan i jednostavan interfejs.
+Potrebno je obezbediti pristup svim režimima rada navedenim u sekciji
+\ref{working_modes}. \\
+Pored toga treba obezbediti ispisivanje i promenu konfiguracionog fajla odnosno
+promenu pinova kojom RPi pristupa AD9850 modulu i frekvenciju referentnog takta.
+
+\subsubsection{Opis dizajna}
+Za potrebe ovog projekta osmišljen je sledeći dizajn. \\
+Glavni prozor aplikacije je podeljen na dva \textbf{Widget}-a \cite{QWidget}.
+Levi Widget je klase \textbf{QTabWidget} koji podržava kartice. \\
+Desni widget je fiksan i prikazuje statusne informacije, na njemu se još nalazi
+i taster za zaustavljanje generatora. \\
+Na glavnom prozoru se nalazi još i \textbf{Menu}\cite{QMenu}, preko kojeg se
+može pokrenuti dijalog za pristup konfiguracionom fajlu koji je prikazan na
+slici(\ref{config_dialog}). \\
+
+Widget sa karticama trenutno sadrži Basic i Sweep karticu. Basic kartica
+prikazana na slici(\ref{basic_tab}) pokriva
+\textbf{Run} i \textbf{Run for} režime rada. \\
+Sweep kartica pokriva prikazana na slici(\ref{sweep_tab}) pokriva \textbf{Sweep}
+režim rada. \\
+
+Organizacijom ovog widget-a pomoću kartica ostavlja se mogućnost proširenja programa
+sa novim režimima rada, a da se pritom ne narušava dizajn interfejsa i izbegne
+prenatrpanost. \\
+
+
+\subsubsection{Basic kartica}
+
+Kao što se vidi na slikama(\ref{basic_tab}, \ref{basic_tab2}), ova kartica se
+sastoji iz dva polja za unos realizovana pomoću QSpinBox\cite{QSpinBox} klase i
+dva tastera QPushButton\cite{QPushButton}. \\
+
+Tasteri \textbf{Start} i \textbf{Run For} pokreću generator u režimima \textbf{Run} odnosno \textbf{Run For}. \\
+U slučaju režima \textbf{Run} razmatra se samo polje za unos sa opisom
+\textbf{Frequency}. \\
+U slučaju režima \textbf{Run For} potrebno je uneti vremensko trajanje rada generatora u
+polje za unos sa opisom \textbf{Run Time}. \\
+\begin{figure}[H]
+  \centering{
+    \includegraphics[width=10cm]{img/AD9850_gui_run.png}
+    \caption{AD9850 GUI Basic Tab}
+    \label{basic_tab}
+  }
+\end{figure}
+
+\begin{figure}[H]
+  \centering{
+    \includegraphics[width=10cm]{img/AD9850_gui_run_for.png}
+    \caption{AD9850 GUI run for}
+    \label{basic_tab2}
+  }
+\end{figure}
+
+\subsubsection{Sweep kartica}
+
+Na slici(\ref{sweep_tab}) prikazana je Sweep kartica, ona se sastoji iz četiri
+polja za upis i tastera Sweep. \\
+Opisi parametara u ovom režimu se nalaze u sekciji(\ref{working_modes})
+
+\begin{figure}[H]
+  \centering{
+    \includegraphics[width=10cm]{img/AD9850_gui_sweep.png}
+    \caption{AD9850 GUI Sweep Tab}
+    \label{sweep_tab}
+  }
+\end{figure}
+
+\subsubsection{Status widget}
+
+Potrebno je da korsnik ima uvid u trenutno stanje generatora, u tu svrhu je
+napravljen Status widget koji se nalazi sa desne strane interfejsa.\\
+Može se videti na slikama(\ref{basic_tab}, \ref{basic_tab2}, \ref{sweep_tab}).
+\\
+Na njemu se nalazi QLabel\cite{QLabel} koji prikazuje trenutni režim u kojem
+generator radi i njegove parametre, QLedIndicator\cite{QLedIndicator}
+predstavlja indikator da li je generator aktivan ili nije i taster za stopiranje generatora.
+
+
+\subsubsection{Dijalog za konfiguraciju}
+
+Dijalogu za konfiguraciju može se pristupiti preko config menija na glavnom
+prozoru, prikazan je na slici(\ref{config_dialog}). \\
+Sastoji se od četiri \textbf{QComboBox}\cite{QComboBox} padajućih prozora u
+kojima se nalaze brojevi dostupnih pinova prema \textbf{WiringPi} biblioteci, jednog
+\textbf{QSpinBox} polja za unos frekvencije referentnog oscilatora i dva tastera. \\
+
+Prilikom pokretanja ovog dijaloga čita se konfiguracioni fajl opisan u
+sekciji(\ref{config_file}), zatim prikazuje pročitani parametar u odgovarajuće
+polje. \\
+
+Nakon promene vrednosti padajućih prozora ili polja za unos moguće je sačuvati
+promene u konfiguracioni fajl pritiskom na tastere \textbf{Save config}. \\
+Pritiskom na taster \textbf{Ok} aplikacija učitava novo podešene parametre. \\
+
+\begin{figure}[H]
+  \centering{
+    \includegraphics[width=6cm]{img/AD9850_gui_cfg.png}
+    \caption{AD9850 konfiguracioni dijalog}
+    \label{config_dialog}
+  }
+\end{figure}

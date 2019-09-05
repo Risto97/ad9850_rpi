@@ -1,0 +1,16 @@
+\\
+\begin{tikztimingtable}[%
+  timing/dslope=0.1,
+  timing/.style={x=5ex,y=2ex},
+  x=5ex,
+  timing/rowdist=4ex,
+  timing/name/.style={font=\sffamily\scriptsize}
+  ]
+  \busref{RST}      & 1u 1L 1H 4L U \\
+  \busref{W\_CLK}   & 1u 2.5L 1H 2.5L U \\
+  \busref{FQ\_UD}   & 1u 4.0L 1H 1.0L U \\
+  \busref{DATA}     & 4U 1L 2.5L  \\
+  \extracode
+  \begin{pgfonlayer}{background}
+  \end{pgfonlayer}
+\end{tikztimingtable}

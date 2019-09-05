@@ -1,0 +1,51 @@
+\usepackage{calc}
+\usepackage{booktabs}
+\usepackage{tabularx}% (for comparison)
+\usepackage[acronym,nomain]{glossaries}
+
+\makeglossaries
+
+\newlength\maxlength
+\newlength\thislength
+
+\newglossarystyle{mystyle}
+{%
+  \renewenvironment{theglossary}%
+  {% start of glossary
+   % Find maximum width of the first column:
+    \setlength{\maxlength}{0pt}%
+    \forglsentries[\currentglossary]{\thislabel}%
+    {%
+       \settowidth{\thislength}{\glsentryshort{\thislabel}}%
+       \ifdim\thislength>\maxlength
+         \setlength{\maxlength}{\thislength}%
+       \fi
+    }%
+    % Now calculate the width of the second column:
+    \settowidth{\thislength}{\hspace{1.5em}=\hspace{1em}}%
+    \setlength{\glsdescwidth}{\linewidth-\maxlength-\thislength-2\tabcolsep}%
+    % Start the tabular environment
+    \begin{tabular}{l@{\hspace{5.5em}=\hspace{1em}}p{\glsdescwidth}}
+    \toprule
+    \multicolumn{1}{l}{\textbf{Akronim}} &
+    \multicolumn{1}{@{}l}{\textbf{Opis}}\\%
+    \midrule
+  }%
+  {% end of glossary
+     \bottomrule
+     \end{tabular}%
+  }%
+  % Header has been incorporated into \begin{theglossary}
+  \renewcommand*{\glossaryheader}{}%
+  % Don't do anything between letter groups
+  \renewcommand*{\glsgroupheading}[1]{}%
+  \renewcommand*{\glsgroupskip}{}%
+  % Set display for each the acronym entry
+  \renewcommand{\glossentry}[2]{%
+    \glstarget{##1}{\glsentryshort{##1}}% short form
+    &
+    \glsentrylong{##1}% long form
+    \\% end of row
+  }%
+  % No sub-entries, so \subglossentry doesn't need redefining
+}

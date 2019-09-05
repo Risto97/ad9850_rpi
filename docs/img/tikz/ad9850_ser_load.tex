@@ -1,0 +1,19 @@
+\\
+\newcommand{\strobeSig}{0.25L 0.5H 0.25L}
+\begin{tikztimingtable}[%
+  timing/dslope=0.1,
+  timing/.style={x=5ex,y=2ex},
+  x=5ex,
+  timing/rowdist=4ex,
+  timing/name/.style={font=\sffamily\scriptsize}
+  ]
+  \busref{RST}      & 1u 12L \\
+  \busref{DATA}     & 1u 1L 1D{Freq b0} 1D{Freq b1} ;[dotted]1D{b2-30}; 1D{Freq b31} 1D{Ctrl b0}
+  1D{Ctrl b1} 1D{Power} 1D{Ph b0} ;[dotted]1D{b1-3}; 1D{Ph b4} 1L \\
+  \busref{W\_CLK}   & 1u 1L \strobeSig \strobeSig ;[dotted]1L; \strobeSig
+  \strobeSig \strobeSig \strobeSig \strobeSig ;[dotted]1L; \strobeSig L \\
+  \busref{FQ\_UD}   & 1u 11L \strobeSig \\
+  \extracode
+  \begin{pgfonlayer}{background}
+  \end{pgfonlayer}
+\end{tikztimingtable}
