@@ -13,6 +13,11 @@ gui_app:
 	make -C src/gui
 	mv src/gui/program bin/ad9850_gui
 
+docs/doc.pdf:
+	make -C docs
+
+docs:docs/doc.pdf
+
 test_gui: gui_app
 	./bin/ad9850_gui
 
@@ -26,3 +31,4 @@ clean:
 	-rm src/gui/Makefile
 	-rm src/gui/program
 	-rm -rf bin
+	-make -C docs/ clean
