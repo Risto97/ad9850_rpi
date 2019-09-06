@@ -1,4 +1,4 @@
-// #include <wiringPi.h>
+#include <wiringPi.h>
 #include <cmath>
 
 #include "ad9850.hpp"
@@ -46,9 +46,9 @@ void AD9850::run(unsigned int freq){
 }
 
 void AD9850::run_for(unsigned int freq, unsigned int delay_ms, bool *keep_running){
-  ad9850_run(freq);
+  run(freq);
   _delay_ms_breakable(delay_ms, keep_running);
-  ad9850_rst();
+  rst();
 }
 
 void AD9850::sweep(unsigned start_freq, unsigned int stop_freq, unsigned int step_freq, unsigned int step_time, bool *keep_running){
@@ -57,14 +57,14 @@ void AD9850::sweep(unsigned start_freq, unsigned int stop_freq, unsigned int ste
   unsigned int freq = start_freq;
 
   for(int i = 0; i < steps; i++){
-    ad9850_run(freq);
+    run(freq);
 
     if(!_delay_ms_breakable(step_time, keep_running))
       break;
     else
       freq += step_freq;
   }
-  ad9850_rst();
+  rst();
 }
 
 

@@ -2,7 +2,8 @@
 
 \subsection{Režimi rada}\label{working_modes}
 Kao što je već rečeno \gls{cli} i \gls{gui} aplikacija trebaju da obezbede iste
-funkcionalnosti:
+funkcionalnosti.\\
+Režimi rada koji su implementirani u ovom projektu su opisani u nastavku.
 \begin{itemize}
 \item \label{run_mode} \textbf{Run} pokretanje generatora sa fiksnom frekvencijom bez vremenskog
   ograničenja rada, potreban argument:
@@ -24,23 +25,24 @@ funkcionalnosti:
   \item \textbf{step\_freq}  vrednost koraka frekvencije u Hz.
   \item \textbf{step\_time}  vreme zadržavanja na svakom koraku u ms.
   \end{itemize}
-  Ovaj režim rada generatora se često koristi u ispitivanju frekvencijske karakteristika
-  elektronskih kola.
-  Za prikazivanje frekvencijske karakteristike na osciloskopu pored signala promenljive
+  Ovaj režim rada generatora se često koristi u ispitivanju frekvencijskih karakteristika
+  elektronskih kola ili komponenti.
+  Za prikazivanje frekvencijske karakteristike na osciloskopu, pored signala promenljive
   frekvencije potrebno je obezbediti i trougaoni signal kao izvor vremenske baze
   osciloskopa. \\
   Ovakav uređaj se naziva Sweep Generator ili Wobbler.
-  Često se jedan kanal osciloskopa može podesiti kao izvor vremenske baze dok
+  Često se jedan kanal osciloskopa može koristiti kao izvor vremenske baze dok
   drugi služi kao ulaz za Y-osu.
 
 \end{itemize}
 
 \subsubsection{Konfiguracija aplikacije} \label{config_file}
 Potrebno je obezbediti mogućnost promene pinova preko kojih je \gls{rpi} povezan
-sa AD9850 modulom bez ponovnog kompajliranja aplikacije. \\
-Ovo je rešeno korišćenjem deljenog konfiguracionog fajla za \gls{cli} i
-\gls{gui} aplikaciju. \\
+sa AD9850 modulom bez ponovnog kompajliranja aplikacije.
+Takođe ovo podešavanje treba da bude zajedničko za CLI i GUI aplikaciju.\\
+Ovo je rešeno korišćenjem deljenog konfiguracionog fajla. \\
 
+\noindent
 Konfiguracioni fajl treba da sadrži sledeće parametre.
 \begin{itemize}
 \item \textbf{w\_clk} broj WiringPi pina povezanim sa \textbf{W\_CLK} pinom na AD9850 modulu.
@@ -50,27 +52,27 @@ Konfiguracioni fajl treba da sadrži sledeće parametre.
 \item \textbf{dds\_clk} frekvencija referentnog oscilatora u Hz na AD9850 modulu.
 \end{itemize}
 
-Na GNU/Linux operativnim sistemima konfiguracioni fajlovi trebaju da se nalaze
-u određenom direktorijumu. \\
-Prema XDG Base Directory Specification\cite{xdg_spec} od freedesktop projekta
-treba se poštovati sledeće pravilo za kreiranje konfiguracionog fajla.
+Na \textbf{GNU/Linux} operativnim sistemima konfiguracioni fajlovi se trebaju
+nalaziti u definisanom deljenom direktorijumu. \\
+Prema \textbf{XDG Base Directory Specification}\cite{xdg_spec} od freedesktop projekta
+treba se poštovati sledeće pravilo za skladištenje konfiguracionih fajlova.
 
 \begin{itemize}
-  \item Ukoliko je varijabla okruženja \textbf{XDG\_CONFIG\_HOME} postavljena,
-    tada ona sadrži putanje direktrijuma gde se smeštaju korsnički
+  \item Ukoliko je promenljiva okruženja \textbf{XDG\_CONFIG\_HOME} postavljena,
+    tada ona sadrži putanju direktrijuma gde se smeštajuukorsnički
     konfiguracioni fajlovi za aplikacije.
-  \item Ukoliko je varijabla okruženja \textbf{XDG\_CONFIG\_HOME} prazna kao
+  \item Ukoliko je promenljiva okruženja \textbf{XDG\_CONFIG\_HOME} prazna kao
     direktorijum za smeštanje korisničkih konfiguracionih fajlova treba
     koristiti \textbf{\$HOME/.config}.
   \item Svaka aplikacija koja ima potrebe za konfiguracionim fajlom treba imati
-    svoj direktorijum unutar \textbf{XDG\_CONFIG\_HOME} direktorijuma unutar kojeg će se
+    svoj direktorijum unutar \textbf{XDG\_CONFIG\_HOME} direktorijuma gde će se
     nalaziti konfiguracioni fajlovi.
 \end{itemize}
 
 Ovo ne deluje kao previše bitna stavka, ali bi poštovanje ovih pravila trebalo
 biti obavezno.
 Zbog nepoznavanje ove specifikacije od strane programera nastali su programi
-koji nemaju jedinstven direktorijum za konfiguracione fajlove, već se oni mogu naći
+koji nemaju zajednički direktorijum za konfiguracione fajlove, već se oni mogu naći
 svuda po sistemu.
 Ovo stvara problem prilikom backup-ovanja sistema, ukoliko su svi konfiguracioni
 i korisnički fajlovi na definisanom mestu backup sistema može biti automatizovan i siguran. \\
@@ -81,21 +83,54 @@ Kako bi se izbeglo ponovno pisanje ovakve biblioteke i izbegli rizici za ovaj pr
 
 Za pristup GPIO pinova RPi korišćena je WiringPi\cite{WiringPi} biblioteka
 
+\subsection{Uputstvo za instalaciju}
+
+Kako bi se aplikacija uspešno kompajlirala potrebno je prvo instalirati potrebne
+pakete i biblioteke koje se koriste u ovom projektu. \\
+Korišćeni paketi bi trebale biti dostupne na repozitorijumu svake poznatije Linux
+distribucije. \\
+U ovom slučaju je korišćena Arch Linux ARM distribucija pa će za nju biti
+opisana instalacija paketa.
+
+\begin{lstlisting}[language=bash, basicstyle=\normalsize]
+  $ pacman -S qt5-base libconfig
+  $ yay -S wiringpi-git
+\end{lstlisting}
+
+U ovom slučaju koristi se \textbf{yay AUR helper} za pristup AUR repozitorijumu.
+Ukoliko je potrebna samo CLI aplikacija \textbf{qt5-base} paket nije potreban.\\
+\newpage
+
+Nakon ovoga potrebno je klonirati git repozitorijum ovog projekta
+
+\begin{lstlisting}[language=bash, basicstyle=\normalsize]
+  $ git clone https://github.com/Risto97/ad9850_rpi
+  $ cd ad9850_rpi
+  $ make
+\end{lstlisting} %$
+
+Opciono može se pokrenuti \textbf{sudo make install} kako bi se aplikacija instalirala u \textbf{/usr/bin}
+direktorijumu. U suprotnom izvšni fajl će se nalaziti u \textbf{bin} direktorijumu
+kloniranog git repozitorijuma. \\
+
+Ukoliko je potrebna samo CLI ili GUI aplikacija može se uraditi \textbf{make cli\_app}
+ili \textbf{make gui\_app}. Za dokumentaciju potrebno je izvršiti \textbf{make docs}.
+
 \subsection{CLI aplikacija}
 
 \gls{cli} je aplikacija koja se izvršava bez grafičkog okruženja preko komandne linije.
 Ovo je često bolji pristup za određene aplikacije.
-Kod nekih aplikacija grafičko okruženje nije neophodno i često je
+Kod nekih aplikacija grafičko okruženje nije neophodno i često ih je
 lakše i pouzdanije upravljati preko komandne linije. \\
 
 \subsubsection{Prednosti CLI aplikacije}
 CLI aplikacije su manje kompleksne od GUI aplikacija i
 samim tim postoji manje mogućnosti za postojanje bug-ova.
-Funkcionalnost programa je najčešće bitnija od grafičkog interfejsa, pisanje CLI
-aplikacije zbog jednostavnosti omogućava programeru da se fokusira više na samu
+Funkcionalnost programa je najčešće bitnija od grafičkog interfejsa,
+jednostavnost CLI aplikacije omogućava programeru da se fokusira više na samu
 funkcionalnost. \\
 
-Dodatna prednost CLI aplikacije je lakše pokretanje i podešavanje aplikacije iz
+Dodatna prednost CLI aplikacije je lakše pokretanje i podešavanje iz
 skriptnih jezika (BASH, Python) ovo često kod GUI aplikacija nije moguće.
 Skriptovanje omogućava automatizaciju poslova i uklanja potrebu za ljudskim faktorom.\\
 
@@ -108,11 +143,12 @@ neka od biblioteka za parsiranje argumenata, u ovom projektu je korišćena
 
 Ova biblioteka se sastoji samo od jednog Header fajla, time ukljanja potrebu za
 kompajliranjem dodatne biblioteke.
+\newpage
 
 \subsubsection{Uputstvo za upotrebu}
 
 Pokretanjem \textbf{ad9850\_cli} izvršnog fajla sa argumentom \emph{---help} na
-\textbf{stdout} će se ispisati uputstvo za upotrebu aplikacije. \\
+\textbf{stdout} će se ispisati uputstvo za upotrebu. \\
 
 \begin{lstlisting}[language=bash, caption=ad9850\_cli help opcija]
    $ ad9850 --help
@@ -139,12 +175,11 @@ Na osnovu uputstva možemo pokrenuti generator u Sweep režimu na sledeći nači
 \end{lstlisting} %$
 \subsection{GUI aplikacija}
 
-\subsubsection{Uvod}
 Napisana je pomoću Qt Framework-a \cite{qt}. \\
 Za GUI aplikaciju potrebno je obezbediti intuitivan i jednostavan interfejs.
 Potrebno je obezbediti pristup svim režimima rada navedenim u sekciji
 \ref{working_modes}. \\
-Pored toga treba obezbediti ispisivanje i promenu konfiguracionog fajla odnosno
+Pored toga treba implementirati ispisivanje i promenu konfiguracionog fajla odnosno
 promenu pinova kojom RPi pristupa AD9850 modulu i frekvenciju referentnog takta.
 
 \subsubsection{Opis dizajna}
@@ -153,7 +188,7 @@ Glavni prozor aplikacije je podeljen na dva \textbf{Widget}-a \cite{QWidget}.
 Levi Widget je klase \textbf{QTabWidget} koji podržava kartice. \\
 Desni widget je fiksan i prikazuje statusne informacije, na njemu se još nalazi
 i taster za zaustavljanje generatora. \\
-Na glavnom prozoru se nalazi još i \textbf{Menu}\cite{QMenu}, preko kojeg se
+Na glavnom prozoru se nalazi još i \textbf{QMenu}\cite{QMenu}, preko kojeg se
 može pokrenuti dijalog za pristup konfiguracionom fajlu koji je prikazan na
 slici(\ref{config_dialog}). \\
 
@@ -171,8 +206,8 @@ prenatrpanost. \\
 \subsubsection{Basic kartica}
 
 Kao što se vidi na slikama(\ref{basic_tab}, \ref{basic_tab2}), ova kartica se
-sastoji iz dva polja za unos realizovana pomoću QSpinBox\cite{QSpinBox} klase i
-dva tastera QPushButton\cite{QPushButton}. \\
+sastoji iz dva polja za unos, realizovani pomoću QSpinBox\cite{QSpinBox} klase i
+dva tastera QPushButton\cite{QPushButton} klase. \\
 
 Tasteri \textbf{Start} i \textbf{Run For} pokreću generator u režimima \textbf{Run} odnosno \textbf{Run For}. \\
 U slučaju režima \textbf{Run} razmatra se samo polje za unos sa opisom
@@ -211,8 +246,8 @@ Opisi parametara u ovom režimu se nalaze u sekciji(\ref{working_modes})
 
 \subsubsection{Status widget}
 
-Potrebno je da korsnik ima uvid u trenutno stanje generatora, u tu svrhu je
-napravljen Status widget koji se nalazi sa desne strane interfejsa.\\
+Potrebno je da korisnik ima uvid u trenutno stanje generatora, u tu svrhu je
+napravljen Status widget koji se nalazi sa desne strane interfejsa.
 Može se videti na slikama(\ref{basic_tab}, \ref{basic_tab2}, \ref{sweep_tab}).
 \\
 Na njemu se nalazi QLabel\cite{QLabel} koji prikazuje trenutni režim u kojem
@@ -233,7 +268,7 @@ sekciji(\ref{config_file}), zatim prikazuje pročitani parametar u odgovarajuće
 polje. \\
 
 Nakon promene vrednosti padajućih prozora ili polja za unos moguće je sačuvati
-promene u konfiguracioni fajl pritiskom na tastere \textbf{Save config}. \\
+promene u konfiguracioni fajl pritiskom na taster \textbf{Save config}. \\
 Pritiskom na taster \textbf{Ok} aplikacija učitava novo podešene parametre. \\
 
 \begin{figure}[H]

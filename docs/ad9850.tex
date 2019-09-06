@@ -18,8 +18,8 @@ pa nije moguće digitalno podešavanje bez eksternih komponenti. \\
 Frekvencija se podešava postavljanjem 32-bitnog registra na željenu vrednost,
 ovime je postignuta preciznost od 0.0291 Hz pri frekvenciji referentnog oscilatora od 125
 MHz. \\
-\gls{DDS} omogućava frekvenciju to polovine referentnog takta, ali \gls{dac}
-ograničava frekvenciju na 40 Mhz.
+\gls{dds} omogućava frekvenciju to polovine referentnog takta, ali je \gls{dac}
+ograničava na 40 MHz.
 Pored podešavanje frekvencije moguće je i podešavanje faze između dva analogna
 izlaza. \\
 
@@ -44,7 +44,7 @@ Kako bi se AD9850 resetovao potrebno je generisati sekvencu kao na slici(\ref{ad
 \end{figure}
 
 Nakon resetovanja AD9850 je spreman za prihvatanje konfiguracije i generisanje signala.
-Sekvencu za neophodno odraditi prilikom uspostavljanja napajanja, dok prilikom promene
+Sekvencu za neophodno generisati prilikom uspostavljanja napajanja, dok prilikom promene
 konfiguracije reset nije neophodno odraditi.
 
 \subsubsection{Konfiguracioni registar}
@@ -65,7 +65,7 @@ sadržana frekvencija signala, faza i kontrolni bitovi.
     \item [Freq B4-B1] Podešava izlaznu frekvenciju generatora.\\
       Vrednost ovog registra može se dobiti sledećom formulom:
       \[
-      Freq [32:0] = \frac{freq*2^3^2}{DDS\_CLK}
+      Freq [31:0] = \frac{freq*2^3^2}{DDS\_CLK}
       \] \\
       freq je željena frekvencija, DDS\_CLK je referentni takt.
     \item [Phase] Podešava fazu.
@@ -87,6 +87,8 @@ Upisivanje u serijskom modu je prikazano na slici (\ref{ad9850_load_seq}).
   \caption{Sekvenca serijskog učitavanja}
   \label{ad9850_load_seq}
 \end{figure}
+
+Za detaljne informacije o tajminzima pogledati datasheet \cite{AD9850_ds}.
 
 \newpage
 
@@ -116,5 +118,5 @@ Na ploči se nalazi referentni oscilator od 125 MHz. \\
 Na ulaz internog komparatora za generisanje pravougaonog signala je doveden
 napon sa potenciometra na slici, ovo omogućava ručno podešavanje vremena ispune
 pravougaonog signala.
-Na žalost ovaj modul ne omogućava programibilno podešavanje vremena ispune
+Na žalost ovaj modul ne dozvoljava programabilno podešavanje vremena ispune
 pravougaonog signala. \\
