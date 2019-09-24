@@ -6,14 +6,14 @@ RPi se pokazao kao dobra platforma za razvoj korisničkog interfejsa generatora
 funkcija i ostavlja mogućnost za lako proširenje funkcionalnosti. \\
 
 \subsubsection{Predlozi proširenja}
-U nastavku biće predloženi načini na za proširenje ovog projekta.
-Implementacijom ovih predloga može se dobiti uređaj za testiranje u oblasti audio elektronike
+U nastavku biće predloženi načini za proširenje ovog projekta.
+Implementacijom ovih predloga može se dobiti uređaj za testiranje uređaja u oblasti audio elektronike
 i drugih oblasti na višim frekvencijama. \\
 Većina ovih predloga zahteva projektovanje dodatnih analognih
 elektronskih kola pa zbog toga njihova implementacija nije razmatrana u ovom projektu. \\
 
 \begin{itemize}
-\item \textbf{Dodavanje izlaznog pojačavača} sa mogućnosti dodavanja napona
+\item \textbf{Dodavanje izlaznog pojačavača} sa mogućnosti dodavanja
   offset napona kako bi se obezbedili standardni naponski nivoi prisutni kod
   komercijalnih generatora funkcija (+,- 15V). \\
   Zbog relativno širokog opsega frekvencija generisanog signala (0-40MHz) ovo
@@ -30,15 +30,18 @@ elektronskih kola pa zbog toga njihova implementacija nije razmatrana u ovom pro
 \item \textbf{Proširenje projekta na Wobbler generator}. \\
   Realizovan sweep režim rada predstavlja osnovu Wobbler generatora. \\
   AD9850 je pogodan za realizaciju ovog uređaja zbog širokog opsega izlazne
-  frekvencije i mogućnost brze promene frekvencije. \\
-  Pored Sweep signala potrebno je obezbediti i trouglasti signal za vremensku
+  frekvencije i mogućnosti brze promene frekvencije. \\
+  Pored Sweep signala potrebno je obezbediti i trougaoni signal za vremensku
   bazu osciloskopa kao i potrebne pojačavače za oba signala.
 
 \end{itemize}
 
 \subsubsection{Slike rada}
 
-U nastavku su okačene slike sa logičkog analizatora koje prikazuju rad uređaja.
+U nastavku su prikazane slike sa logičkog analizatora koje prikazuju rad uređaja.
+Pošto je analogni signal sniman logičkim analizatorom moguće je videti samo dva
+naponska nivoa, tako da se ne može videti oblik sinusoide i njena čistoća.
+Može se videti perioda sinusoide i njeno trajanje. \\
 
 \begin{figure}[H]
   \centering{

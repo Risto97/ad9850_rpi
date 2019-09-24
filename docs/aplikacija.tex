@@ -59,9 +59,9 @@ treba se poštovati sledeće pravilo za skladištenje konfiguracionih fajlova.
 
 \begin{itemize}
   \item Ukoliko je promenljiva okruženja \textbf{XDG\_CONFIG\_HOME} postavljena,
-    tada ona sadrži putanju direktrijuma gde se smeštajuukorsnički
+    tada ona sadrži putanju direktrijuma gde se smeštaju korsnički
     konfiguracioni fajlovi za aplikacije.
-  \item Ukoliko je promenljiva okruženja \textbf{XDG\_CONFIG\_HOME} prazna kao
+  \item Ukoliko promenljiva okruženja \textbf{XDG\_CONFIG\_HOME} nije postavljena, kao
     direktorijum za smeštanje korisničkih konfiguracionih fajlova treba
     koristiti \textbf{\$HOME/.config}.
   \item Svaka aplikacija koja ima potrebe za konfiguracionim fajlom treba imati
@@ -87,7 +87,7 @@ Za pristup GPIO pinova RPi korišćena je WiringPi\cite{WiringPi} biblioteka
 
 Kako bi se aplikacija uspešno kompajlirala potrebno je prvo instalirati potrebne
 pakete i biblioteke koje se koriste u ovom projektu. \\
-Korišćeni paketi bi trebale biti dostupne na repozitorijumu svake poznatije Linux
+Korišćeni paketi bi trebali biti dostupne na repozitorijumu svake poznatije Linux
 distribucije. \\
 U ovom slučaju je korišćena Arch Linux ARM distribucija pa će za nju biti
 opisana instalacija paketa.
@@ -141,7 +141,7 @@ Kako bi se skratilo vreme razvoja i izbegla mogućnost grešaka može se koristi
 neka od biblioteka za parsiranje argumenata, u ovom projektu je korišćena
 \textbf{cxxxopts}\cite{cxxopts} biblioteka.
 
-Ova biblioteka se sastoji samo od jednog Header fajla, time ukljanja potrebu za
+Ova biblioteka se sastoji samo od jednog Header fajla, time uklanja potrebu za
 kompajliranjem dodatne biblioteke.
 \newpage
 
@@ -180,7 +180,7 @@ Za GUI aplikaciju potrebno je obezbediti intuitivan i jednostavan interfejs.
 Potrebno je obezbediti pristup svim režimima rada navedenim u sekciji
 \ref{working_modes}. \\
 Pored toga treba implementirati ispisivanje i promenu konfiguracionog fajla odnosno
-promenu pinova kojom RPi pristupa AD9850 modulu i frekvenciju referentnog takta.
+promenu pinova preko kojih RPi pristupa AD9850 modulu i frekvenciju referentnog takta.
 
 \subsubsection{Opis dizajna}
 Za potrebe ovog projekta osmišljen je sledeći dizajn. \\
@@ -195,7 +195,7 @@ slici(\ref{config_dialog}). \\
 Widget sa karticama trenutno sadrži Basic i Sweep karticu. Basic kartica
 prikazana na slici(\ref{basic_tab}) pokriva
 \textbf{Run} i \textbf{Run for} režime rada. \\
-Sweep kartica pokriva prikazana na slici(\ref{sweep_tab}) pokriva \textbf{Sweep}
+Sweep kartica prikazana na slici(\ref{sweep_tab}) pokriva \textbf{Sweep}
 režim rada. \\
 
 Organizacijom ovog widget-a pomoću kartica ostavlja se mogućnost proširenja programa
@@ -264,8 +264,8 @@ kojima se nalaze brojevi dostupnih pinova prema \textbf{WiringPi} biblioteci, je
 \textbf{QSpinBox} polja za unos frekvencije referentnog oscilatora i dva tastera. \\
 
 Prilikom pokretanja ovog dijaloga čita se konfiguracioni fajl opisan u
-sekciji(\ref{config_file}), zatim prikazuje pročitani parametar u odgovarajuće
-polje. \\
+sekciji(\ref{config_file}), zatim prikazuje pročitane parametre u odgovarajućim
+poljima. \\
 
 Nakon promene vrednosti padajućih prozora ili polja za unos moguće je sačuvati
 promene u konfiguracioni fajl pritiskom na taster \textbf{Save config}. \\

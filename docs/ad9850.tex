@@ -18,9 +18,9 @@ pa nije moguće digitalno podešavanje bez eksternih komponenti. \\
 Frekvencija se podešava postavljanjem 32-bitnog registra na željenu vrednost,
 ovime je postignuta preciznost od 0.0291 Hz pri frekvenciji referentnog oscilatora od 125
 MHz. \\
-\gls{dds} omogućava frekvenciju to polovine referentnog takta, ali je \gls{dac}
+\gls{dds} omogućava frekvenciju do polovine referentnog takta, ali je \gls{dac}
 ograničava na 40 MHz.
-Pored podešavanje frekvencije moguće je i podešavanje faze između dva analogna
+Pored podešavanja frekvencije moguće je i podešavanje faze između dva analogna
 izlaza. \\
 
 Moguća je promena izlazne frekvencije brzinom do 23 miliona
@@ -44,13 +44,13 @@ Kako bi se AD9850 resetovao potrebno je generisati sekvencu kao na slici(\ref{ad
 \end{figure}
 
 Nakon resetovanja AD9850 je spreman za prihvatanje konfiguracije i generisanje signala.
-Sekvencu za neophodno generisati prilikom uspostavljanja napajanja, dok prilikom promene
+Reset sekvencu neophodno je generisati prilikom uspostavljanja napajanja, dok prilikom promene
 konfiguracije reset nije neophodno odraditi.
 
 \subsubsection{Konfiguracioni registar}
 
-AD9850 se u potpunosti upravlja preko jedno 40-bitnog registra u kojem su
-sadržana frekvencija signala, faza i kontrolni bitovi.
+AD9850 se u potpunosti upravlja preko jednog 40-bitnog registra kojim se
+podešava frekvencija signala, faza i kontrolni bitovi.
 
 \begin{register}{H}{Konfiguracioni registar}{}% name=example
   \label{example}%
