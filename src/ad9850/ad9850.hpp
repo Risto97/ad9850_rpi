@@ -8,7 +8,7 @@
 // #define DATA 5
 // #define RST 6
 
-// #define DDS_CLK 125000000
+#define DDS_CLK 125000000
 
 class AD9850 {
 private:
